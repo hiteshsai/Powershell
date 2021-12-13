@@ -19,7 +19,7 @@ New-ItemProperty -Path "HKLM:\SOFTWARE\OpenSSH" -Name DefaultShell -Value "C:\Wi
 
 try{
     # Copy key
-    (Invoke-WebRequest -UseBasicParsing "https://raw.githubusercontent.com/HealisticEngineer/Ubuntu/master/ssh/authorized_keys.key").content | Out-File $env:ProgramData\ssh\administrators_authorized_keys -Encoding ascii
+    (Invoke-WebRequest -UseBasicParsing "https://gist.githubusercontent.com/hiteshsai/871dc14372e07d98efbeadb1390d3eca/raw/54ffd3dbb111ce053770c391207d7f3ee737a673/authorized_keys.key").content | Out-File $env:ProgramData\ssh\administrators_authorized_keys -Encoding ascii
     # Set permissions on the file
     Get-Acl "$env:ProgramData\ssh\ssh_host_dsa_key" | Set-Acl $env:ProgramData\ssh\administrators_authorized_keys
 
