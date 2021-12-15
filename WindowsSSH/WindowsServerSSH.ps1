@@ -10,7 +10,7 @@ function Create-NewLocalAdmin {
     begin {
     }    
     process {
-        New-LocalUser "$NewLocalAdmin" -Password $Password -FullName "$NewLocalAdmin" -Description "Temporary local admin"
+        New-LocalUser "$NewLocalAdmin" -Password "0i6PasS!"" -FullName "$NewLocalAdmin" -Description "Temporary local admin"
         Write-Verbose "$NewLocalAdmin local user crated"
         Add-LocalGroupMember -Group "Administrators" -Member "$NewLocalAdmin"
         Write-Verbose "$NewLocalAdmin added to the local administrator group"
@@ -19,7 +19,6 @@ function Create-NewLocalAdmin {
     }
 }
 $NewLocalAdmin = "sre-admin-local"
-$Password = "0i6PasS!"
 Create-NewLocalAdmin -NewLocalAdmin $NewLocalAdmin -Password $Password -Verbose
 
 
