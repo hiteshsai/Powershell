@@ -1,3 +1,28 @@
+#Paolo Frigo, https://www.scriptinglibrary.com
+#requires -runasadministrator 
+ 
+function Create-NewLocalAdmin {
+    [CmdletBinding()]
+    param (
+        [string] $NewLocalAdmin,
+        [securestring] $Password
+    )    
+    begin {
+    }    
+    process {
+        New-LocalUser "$NewLocalAdmin" -Password $Password -FullName "$NewLocalAdmin" -Description "Temporary local admin"
+        Write-Verbose "$NewLocalAdmin local user crated"
+        Add-LocalGroupMember -Group "Administrators" -Member "$NewLocalAdmin"
+        Write-Verbose "$NewLocalAdmin added to the local administrator group"
+    }    
+    end {
+    }
+}
+$NewLocalAdmin = "sre-admin-local"
+$Password = "0i6PasS!"
+Create-NewLocalAdmin -NewLocalAdmin $NewLocalAdmin -Password $Password -Verbose
+
+
 $service = Get-WindowsCapability -Online | Where-Object Name -like 'OpenSSH*'
 if(!($service | Where-Object {$_.name -eq "OpenSSH.Client~~~~0.0.1.0" -AND $_.state -ne "Installed"})) {
     Add-WindowsCapability -Online -Name OpenSSH.Client~~~~0.0.1.0
@@ -5,10 +30,16 @@ if(!($service | Where-Object {$_.name -eq "OpenSSH.Client~~~~0.0.1.0" -AND $_.st
 if(!($service | Where-Object {$_.name -eq "OpenSSH.Server~~~~0.0.1.0" -AND $_.state -ne "Installed"})) {
     Add-WindowsCapability -Online -Name OpenSSH.Server~~~~0.0.1.0
 }
+
+Install-Module -Name OpenSSHUtils -RequiredVersion 0.0.2.0 -Scope AllUsers
+
 # Start the service
 Start-Service sshd
 # set service to automatic
 Set-Service -Name sshd -StartupType 'Automatic'
+
+
+
 # check firewall
 $fw = Get-NetFirewallRule -Name *ssh*
 if(!($fw)) {
